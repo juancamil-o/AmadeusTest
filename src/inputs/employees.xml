@@ -1,0 +1,63 @@
+<employees>
+    <employee>
+        <id>301</id>
+        <name>Michael Green</name>
+        <department>Marketing</department>
+        <salary>48000</salary>
+    </employee>
+    <employee>
+        <id>302</id>
+        <name>Natalie Woods</name>
+        <department>IT</department>
+        <salary>52000</salary>
+    </employee>
+    <employee>
+        <id>303</id>
+        <name>Oliver Reed</name>
+        <department>HR</department>
+        <salary>47000</salary>
+    </employee>
+    <employee>
+        <id>304</id>
+        <name>Penny Hall</name>
+        <department>Finance</department>
+        <salary>60000</salary>
+    </employee>
+    <employee>
+        <id>305</id>
+        <name>Quentin Blake</name>
+        <department>Sales</department>
+        <salary>51000</salary>
+    </employee>
+    <employee>
+        <id>306</id>
+        <name>Rebecca Lane</name>
+        <department>Engineering</department>
+        <salary>58000</salary>
+    </employee>
+    <employee>
+        <id>307</id>
+        <name>Samuel Wright</name>
+        <department>Logistics</department>
+        <salary>50000</salary>
+    </employee>
+    <employee>
+        <id>308</id>
+        <name>Teresa Morgan</name>
+        <department>Operations</department>
+        <salary>53000</salary>
+    </employee>
+    <employee>
+        <id>309</id>
+        <name>Ulysses Grant</name>
+        <department>Support</department>
+        <salary>49000</salary>
+    </employee>
+    <employee>
+        <id>310</id>
+        <name>Victoria Knight</name>
+        <department>Legal</department>
+        <salary>62000</salary>
+    </employee>
+</employees>
+

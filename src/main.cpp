@@ -5,7 +5,7 @@
 #include "json_parser.h"
 #include "xml_parser.h"
 
-// Función auxiliar para obtener la extensión del archivo
+// aux func to get the file extension
 std::string getFileExtension(const std::string& filename) {
     size_t dotPos = filename.rfind('.');
     return (dotPos != std::string::npos) ? filename.substr(dotPos + 1) : "";
@@ -13,7 +13,7 @@ std::string getFileExtension(const std::string& filename) {
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Uso: " << argv[0] << " <archivo1.json/xml> <archivo2.json/xml> ..." << std::endl;
+        std::cerr << "Use: " << argv[0] << " <file1.json/xml> <file2.json/xml> ..." << std::endl;
         return 1;
     }
 
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         } else if (extension == "xml") {
             employees = XMLParser::parseFromFile(filename);
         } else {
-            std::cerr << "Error: Formato de archivo no soportado (" << filename << "). Use JSON o XML." << std::endl;
+            std::cerr << "Error: file extension no supported (" << filename << "). Use JSON or XML." << std::endl;
             continue;
         }
 
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (allEmployees.empty()) {
-        std::cout << "No se encontraron empleados en los archivos procesados." << std::endl;
+        std::cout << "Not employees found in the file(s)." << std::endl;
         return 1;
     }
 
@@ -80,13 +80,13 @@ int main(int argc, char* argv[]) {
 
     std::vector<std::map<std::string, std::string>> sortedEmployees = allEmployees;
 
-    // Ordenar los empleados por ID
+    // ordering employees by id in ascending order
     std::sort(sortedEmployees.begin(), sortedEmployees.end(), 
     [](const std::map<std::string, std::string>& a, 
        const std::map<std::string, std::string>& b) {
         return std::stoi(a.at("id")) < std::stoi(b.at("id"));
 });
-    // Imprimir los empleados de todos los archivos procesados
+
     std::cout << "Sorted Employees List:" << std::endl;
     for (const auto& emp : sortedEmployees) {
         std::cout << "-------------------------" << std::endl;
