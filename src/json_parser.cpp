@@ -1,77 +1,79 @@
-#ifndef JSON_PARSER_H
-#define JSON_PARSER_H
-
-#include <iostream>
-#include <fstream>
+#include "json_parser.h"
 #include <sstream>
-#include <map>
-#include <vector>
-#include <string>
+#include <algorithm>
 
+// Función para eliminar espacios en los bordes de un string
+std::string trim(const std::string& str) {
+    size_t first = str.find_first_not_of(" \t\n\r");
+    if (first == std::string::npos) return "";
+    size_t last = str.find_last_not_of(" \t\n\r");
+    return str.substr(first, (last - first + 1));
+}
 
-class JSONParser {
-public:
-    static std::vector<std::map<std::string, std::string>> parseFromFile(const std::string& filename) {
-        std::ifstream file(filename);  
-
-        if (!file.is_open()) {
-            throw std::runtime_error("Error opening JSON " + filename);
-        }
-
-        std::stringstream buffer;
-        buffer << file.rdbuf();  // Cargar todo el archivo en un string
-        file.close();
-
-        return parseJSON(buffer.str());
+// Función para extraer valores entre comillas (ej: "nombre": "John Doe")
+std::string extractValue(const std::string& line) {
+    size_t first = line.find("\"");
+    size_t last = line.rfind("\"");
+    if (first != std::string::npos && last != std::string::npos && first != last) {
+        return line.substr(first + 1, last - first - 1);
     }
+    return "";
+}
 
-private:
-    static std::vector<std::map<std::string, std::string>> parseJSON(const std::string& jsonStr) {
-        std::vector<std::map<std::string, std::string>> data;
-        std::map<std::string, std::string> obj;
-        std::string key, value;
-
-        bool inQuotes = false;
-        bool readingKey = true;
-
-        for (size_t i = 0; i < jsonStr.length(); i++) {
-            char c = jsonStr[i];
-
-            if (c == '"') {
-                inQuotes = !inQuotes;
-            } else if (!inQuotes && (c == '{' || c == '[')) {
-                obj.clear();
-            } else if (!inQuotes && (c == '}' || c == ']')) {
-                if (!obj.empty()) {
-                    data.push_back(obj);
-                }
-            } else if (!inQuotes && c == ':') {
-                readingKey = false;
-            } else if (!inQuotes && (c == ',' || c == '\n')) {
-                readingKey = true;
-            } else {
-                if (inQuotes) {
-                    if (readingKey) {
-                        key += c;
-                    } else {
-                        value += c;
-                    }
-                }
-            }
-
-            if (!readingKey && !inQuotes && (c == ',' || c == '}' || c == ']')) {
-                obj[key] = value;
-                key.clear();
-                value.clear();
-            }
-        }
-
-        return data;
-    }
-
+// Parseador manual de JSON usando solo STL
+std::vector<std::map<std::string, std::string>> JSONParser::parseFromFile(const std::string& filename) {
+    std::vector<std::map<std::string, std::string>> employees;
+    std::ifstream file(filename);
     
-};
+    if (!file) {
+        std::cerr << "Error: No se pudo abrir el archivo JSON." << std::endl;
+        return employees;
+    }
 
+    std::string line;
+    std::map<std::string, std::string> employee;
+    bool inEmployeeBlock = false;
 
+    while (std::getline(file, line)) {
+        line = trim(line);
 
-#endif // JSON_PARSER_H
+        if (line == "\"employees\": [") {
+            continue;
+        }
+
+        if (line == "{") {
+            inEmployeeBlock = true;
+            employee.clear();
+            continue;
+        }
+
+        if (line == "},") {
+            employees.push_back(employee);
+            inEmployeeBlock = false;
+            continue;
+        }
+
+        if (line == "}") {
+            if (!employee.empty()) employees.push_back(employee);
+            break; 
+        }
+
+        if (inEmployeeBlock) {
+            size_t colonPos = line.find(":");
+            if (colonPos != std::string::npos) {
+                std::string key = extractValue(line.substr(0, colonPos));
+                std::string value = extractValue(line.substr(colonPos + 1));
+
+                // Si es un número, mantenerlo como string
+                if (value.empty()) {
+                    value = trim(line.substr(colonPos + 1));
+                    if (value.back() == ',') value.pop_back(); // Remover coma final
+                }
+
+                employee[key] = value;
+            }
+        }
+    }
+
+    return employees;
+}
