@@ -2,7 +2,7 @@
 #include <sstream>
 #include <algorithm>
 
-// Función para eliminar espacios en los bordes de un string
+// Function to delete white spaces
 std::string trim(const std::string& str) {
     size_t first = str.find_first_not_of(" \t\n\r");
     if (first == std::string::npos) return "";
@@ -10,7 +10,7 @@ std::string trim(const std::string& str) {
     return str.substr(first, (last - first + 1));
 }
 
-// Función para extraer valores entre comillas (ej: "nombre": "John Doe")
+// Function to extract values (ej: "name": "John Doe")
 std::string extractValue(const std::string& line) {
     size_t first = line.find("\"");
     size_t last = line.rfind("\"");
@@ -20,13 +20,13 @@ std::string extractValue(const std::string& line) {
     return "";
 }
 
-// Parseador manual de JSON usando solo STL
+
 std::vector<std::map<std::string, std::string>> JSONParser::parseFromFile(const std::string& filename) {
     std::vector<std::map<std::string, std::string>> employees;
     std::ifstream file(filename);
     
     if (!file) {
-        std::cerr << "Error: No se pudo abrir el archivo JSON." << std::endl;
+        std::cerr << "Error: Could not open JSON file." << std::endl;
         return employees;
     }
 
@@ -64,10 +64,10 @@ std::vector<std::map<std::string, std::string>> JSONParser::parseFromFile(const 
                 std::string key = extractValue(line.substr(0, colonPos));
                 std::string value = extractValue(line.substr(colonPos + 1));
 
-                // Si es un número, mantenerlo como string
+
                 if (value.empty()) {
                     value = trim(line.substr(colonPos + 1));
-                    if (value.back() == ',') value.pop_back(); // Remover coma final
+                    if (value.back() == ',') value.pop_back();
                 }
 
                 employee[key] = value;
